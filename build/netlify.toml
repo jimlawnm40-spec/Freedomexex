@@ -1,0 +1,5 @@
+# Base directory for the Netlify site. The FastAPI backend runs separately (uvicorn);
+# Netlify serves the static frontend from build/public.
+[build]
+  command = "echo 'No build step needed'"
+  publish = "public"
