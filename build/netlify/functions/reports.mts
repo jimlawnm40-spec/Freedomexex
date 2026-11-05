@@ -1,21 +1,16 @@
 import type { Config } from "@netlify/functions";
-import { desc, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { reports } from "../../db/schema.js";
-import { CATEGORIES, REPORT_TYPES, clean, normalizeIdentifier, publicColumns } from "../../lib/reports.js";
+import {
+  CATEGORIES, MIN_IDENTIFIER_LENGTH, REPORT_TYPES, activeReports, clean, isOneOf, normalizeIdentifier, publicColumns,
+} from "../../lib/reports.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 export default async (req: Request) => {
   if (req.method === "GET") {
-    const recent = await db
-      .select(publicColumns)
-      .from(reports)
-      .where(eq(reports.status, "active"))
-      .orderBy(desc(reports.createdAt))
-      .limit(12);
-    return Response.json({ reports: recent });
+    return Response.json({ reports: await activeReports(12) });
   }
 
   let body: Record<string, unknown>;
@@ -34,9 +29,11 @@ export default async (req: Request) => {
   const description = clean(body.description, 2000);
 
   const errors: string[] = [];
-  if (identifier.length < 4) errors.push("Serial number / IMEI / VIN must have at least 4 letters or digits.");
-  if (!(CATEGORIES as readonly string[]).includes(category)) errors.push("Choose an item category.");
-  if (!(REPORT_TYPES as readonly string[]).includes(reportType)) errors.push("Choose a report type.");
+  if (identifier.length < MIN_IDENTIFIER_LENGTH) {
+    errors.push(`Serial number / IMEI / VIN must have at least ${MIN_IDENTIFIER_LENGTH} letters or digits.`);
+  }
+  if (!isOneOf(CATEGORIES, category)) errors.push("Choose an item category.");
+  if (!isOneOf(REPORT_TYPES, reportType)) errors.push("Choose a report type.");
   if (description.length < 10) errors.push("Describe what happened (at least 10 characters).");
   if (contactEmail && !EMAIL_RE.test(contactEmail)) errors.push("Contact email looks invalid.");
   if (incidentDate && (!DATE_RE.test(incidentDate) || isNaN(Date.parse(incidentDate)))) errors.push("Incident date is invalid.");

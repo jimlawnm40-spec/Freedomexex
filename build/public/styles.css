@@ -39,8 +39,8 @@ button:disabled { opacity: .6; cursor: wait; }
 .types input:checked + span { border-color: var(--red); background: #e0463a22; }
 .types input:focus-visible + span { outline: 2px solid var(--red); }
 .actions { display: flex; align-items: center; gap: 14px; }
-#report-status.ok, .ok { color: var(--green); }
-#report-status.err, .err { color: #ff8a7f; }
+.ok { color: var(--green); }
+.err { color: #ff8a7f; }
 .result { margin-top: 20px; border-radius: 10px; padding: 18px; border: 1px solid var(--line); }
 .result.clear { border-color: #6fbf7366; background: #6fbf7312; }
 .result.flagged { border-color: #e0463a88; background: #e0463a14; }

@@ -26,14 +26,25 @@ async function api(url, opts) {
   return data;
 }
 
+// Prevents default submission and disables the submit button while `handler` runs.
+function onSubmit(form, handler) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector("button");
+    btn.disabled = true;
+    try {
+      await handler();
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
 // Check
 const checkForm = document.getElementById("check-form");
 const checkResult = document.getElementById("check-result");
-checkForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = checkForm.querySelector("button");
+onSubmit(checkForm, async () => {
   const id = checkForm.id.value.trim();
-  btn.disabled = true;
   try {
     const data = await api(`/api/check?id=${encodeURIComponent(id)}`);
     if (data.flagged) {
@@ -47,18 +58,13 @@ checkForm.addEventListener("submit", async (e) => {
     }
   } catch (err) {
     checkResult.innerHTML = `<p class="err">${esc(err.message)}</p>`;
-  } finally {
-    btn.disabled = false;
   }
 });
 
 // Report
 const reportForm = document.getElementById("report-form");
 const reportStatus = document.getElementById("report-status");
-reportForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const btn = reportForm.querySelector("button");
-  btn.disabled = true;
+onSubmit(reportForm, async () => {
   reportStatus.className = "";
   reportStatus.textContent = "Submitting…";
   try {
@@ -71,8 +77,6 @@ reportForm.addEventListener("submit", async (e) => {
   } catch (err) {
     reportStatus.className = "err";
     reportStatus.textContent = err.message;
-  } finally {
-    btn.disabled = false;
   }
 });
 
