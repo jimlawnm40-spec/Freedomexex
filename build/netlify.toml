@@ -1,5 +1,8 @@
-# Base directory for the Netlify site. The FastAPI backend runs separately (uvicorn);
-# Netlify serves the static frontend from build/public.
+# Base directory for the Netlify site. Static frontend lives in build/public,
+# serverless API in build/netlify/functions, database migrations in build/netlify/database/migrations.
 [build]
   command = "echo 'No build step needed'"
   publish = "public"
+
+[functions]
+  directory = "netlify/functions"

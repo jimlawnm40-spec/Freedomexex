@@ -3,21 +3,92 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Freedomexex</title>
-  <style>
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #1d1a16; color: #efe6d2;
-      font: 16px/1.5 system-ui, sans-serif; padding: 24px; }
-    main { max-width: 560px; }
-    h1 { font-size: clamp(32px, 7vw, 56px); margin: 0 0 12px; letter-spacing: -.02em; }
-    h1 span { color: #e0463a; }
-    p { color: #cfc5ad; }
-  </style>
+  <title>Freedomexex — Check before you buy</title>
+  <meta name="description" content="Check a serial number, IMEI or VIN for stolen, damaged or misrepresented reports before buying used goods." />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <header class="top">
+    <a class="logo" href="/">FREEDOM<span>EXEX</span></a>
+    <nav>
+      <a href="#check">Check</a>
+      <a href="#report">Report</a>
+      <a href="#recent">Recent</a>
+    </nav>
+  </header>
+
   <main>
-    <h1>FREEDOM<span>EXEX</span></h1>
-    <p>Protecting buyers and sellers from stolen, damaged or misrepresented goods in everyday sales.</p>
-    <p>Coming soon.</p>
+    <section class="hero">
+      <p class="eyebrow">Everyday sales, fewer surprises</p>
+      <h1>Check it <em>before</em> you hand over the cash.</h1>
+      <p class="lede">Look up a phone, bike, laptop or tool by its serial number, IMEI or VIN. See if anyone has reported it stolen, damaged or misrepresented — and report it yourself if it happened to you.</p>
+    </section>
+
+    <section id="check" class="panel">
+      <h2><span class="num">01</span> Check an item</h2>
+      <form id="check-form" class="check-row" autocomplete="off">
+        <label class="sr" for="check-id">Serial number, IMEI or VIN</label>
+        <input id="check-id" name="id" placeholder="Serial number, IMEI or VIN" required minlength="4" maxlength="64" />
+        <button type="submit">Check</button>
+      </form>
+      <p class="hint">Spaces and dashes are ignored. Phones: dial <code>*#06#</code> to see the IMEI.</p>
+      <div id="check-result" aria-live="polite"></div>
+    </section>
+
+    <section id="report" class="panel">
+      <h2><span class="num">02</span> Report an item</h2>
+      <p class="hint">Reports are public, except your email — that stays private.</p>
+      <form id="report-form" class="grid">
+        <fieldset class="full types">
+          <legend>What happened?</legend>
+          <label><input type="radio" name="reportType" value="stolen" required /> <span>Stolen</span></label>
+          <label><input type="radio" name="reportType" value="damaged" /> <span>Sold damaged</span></label>
+          <label><input type="radio" name="reportType" value="misrepresented" /> <span>Misrepresented</span></label>
+        </fieldset>
+        <label class="full">Serial number / IMEI / VIN *
+          <input name="identifier" required minlength="4" maxlength="64" />
+        </label>
+        <label>Category *
+          <select name="category" required>
+            <option value="">Choose…</option>
+            <option value="phone">Phone</option>
+            <option value="laptop">Laptop</option>
+            <option value="tablet">Tablet</option>
+            <option value="bicycle">Bicycle</option>
+            <option value="vehicle">Vehicle</option>
+            <option value="tool">Tool</option>
+            <option value="camera">Camera</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="electronics">Other electronics</option>
+            <option value="instrument">Instrument</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <label>Brand <input name="brand" maxlength="80" /></label>
+        <label>Model <input name="model" maxlength="80" /></label>
+        <label>Date it happened <input type="date" name="incidentDate" /></label>
+        <label class="full">Location (city / area) <input name="location" maxlength="120" /></label>
+        <label class="full">Description *
+          <textarea name="description" rows="4" required minlength="10" maxlength="2000" placeholder="Describe the item and what happened. Distinguishing marks help."></textarea>
+        </label>
+        <label class="full">Contact email (private, optional) <input type="email" name="contactEmail" maxlength="254" /></label>
+        <div class="full actions">
+          <button type="submit">Submit report</button>
+          <span id="report-status" aria-live="polite"></span>
+        </div>
+      </form>
+    </section>
+
+    <section id="recent" class="panel">
+      <h2><span class="num">03</span> Recent reports</h2>
+      <ul id="recent-list" class="cards"><li class="muted">Loading…</li></ul>
+    </section>
   </main>
+
+  <footer>
+    <p>Freedomexex protects buyers and sellers in everyday sales. Reports are submitted by the public and are not verified — always use judgement, and contact local police about stolen property.</p>
+  </footer>
+
+  <script src="/app.js" type="module"></script>
 </body>
 </html>
